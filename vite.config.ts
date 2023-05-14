@@ -9,13 +9,15 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@app': path.resolve(__dirname, './src/app'),
-      '@entities': path.resolve(__dirname, './src/entities'),
-      '@features': path.resolve(__dirname, './src/features'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@shared': path.resolve(__dirname, './src/shared'),
-      '@widgets': path.resolve(__dirname, './src/widgets'),
-      '@processes': path.resolve(__dirname, './src/processes'),
+      '~': path.resolve(__dirname, './src'),
     },
+  },
+  build: {
+    emptyOutDir: true,
+    minify: false,
+    target: 'modules',
+    commonjsOptions: {
+      sourceMap: true
+    }
   },
 });

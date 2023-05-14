@@ -16,28 +16,11 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "paths": {
-      "@app": [
-        "src/app/"
-      ],
-      "@entities/*": [
-        "src/entities/*"
-      ],
-      "@features/*": [
-        "src/features/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
-      ],
-      "@shared/*": [
-        "src/shared/*"
-      ],
-      "@widgets/*": [
-        "src/widgets/*"
-      ],
-      "@processes/*": [
-        "src/processes/*"
+      "~/*": [
+        "src/*"
       ]
     },
+    "declaration": false,
     "rootDir": "src",
     "outDir": "build",
     "isolatedModules": true,
@@ -57,6 +40,8 @@
     "jsx": "react-jsx"
   },
   "exclude": [
-    "vite.config.ts"
+    "vite.config.ts",
+    "build",
+    "dist"
   ]
 }

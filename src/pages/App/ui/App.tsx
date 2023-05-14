@@ -1,16 +1,16 @@
 import { Button } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 
+import { Link } from 'atomic-router-react';
 import cn from 'classnames';
+import { useUnit } from 'effector-react';
 
-import { useActions } from '@shared/lib/hooks';
-import type { noop } from '@shared/lib/ts';
+import type { noop } from '~/shared/lib/ts';
+import { routes } from '~/shared/models/router';
 
-import { actions, selectAppValue } from '../model';
+import { $value, increment, onLogout } from '../model';
 
 export function App() {
-  const state = useSelector(selectAppValue);
-  const { increment } = useActions(actions);
+  const state = useUnit($value);
 
   return (
     <div className={cn('asd', 'App', { test: true })}>
@@ -28,6 +28,8 @@ export function App() {
         </p>
       </div>
       <p className="read-the-docs">Click on the Vite and React logos to learn more </p>
+      <Button onClick={() => onLogout()}>logout</Button>
+      <Link to={routes.admin}>admin</Link>
     </div>
   );
 }

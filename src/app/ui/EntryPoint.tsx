@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { compose } from '@shared/lib/compose';
+import { compose } from '~/shared/lib/helpers';
 
 import { Router, withStore } from '../providers';
 

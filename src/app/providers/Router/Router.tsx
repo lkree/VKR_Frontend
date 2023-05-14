@@ -1,10 +1,10 @@
 import { Spinner } from 'react-bootstrap';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
-import { ProtectedRoute } from '@processes/Login';
+import { ProtectedRoute } from '~/processes/Login';
 
 const getIndexPage = () =>
-  import('@pages/App').then(({ App }) => ({
+  import('~/pages/App').then(({ App }) => ({
     element: (
       <ProtectedRoute>
         <App />
@@ -26,7 +26,7 @@ export const Router = () => (
       },
       {
         path: '/auth',
-        lazy: () => import('@pages/Login').then(({ Login }) => ({ element: <Login /> })),
+        lazy: () => import('~/pages/Login').then(({ Login }) => ({ element: <Login /> })),
       },
       {
         path: '*',
