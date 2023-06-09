@@ -19,7 +19,7 @@ module.exports = {
     '~/features.*',
     '~/entities.*',
     '~/shared.*',
-    '^[.]{2}[\\/]+\\w\\D+',
+    '^[.]{2}[\\/]+\\w*\\D+',
     '^[.]{1}[\\/]+\\w\\D+'
   ],
   importOrderSeparation: true,

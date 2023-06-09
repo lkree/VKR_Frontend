@@ -2,13 +2,16 @@ import { createReducer } from '@reduxjs/toolkit';
 
 import { AuthStatus } from '~/shared/models/session/const';
 
-import { loadSession } from './actions';
+import { loadSession, setAuthStatus } from './actions';
 import type { SessionState } from './types';
 
-const initialState: SessionState = { sessionData: null, authStatus: AuthStatus.Initial };
+const initialState: SessionState = { authStatus: AuthStatus.Initial };
 
 export const session = createReducer(initialState, builder => {
   builder
+    .addCase(setAuthStatus, (state, { payload }) => {
+      state.authStatus = payload;
+    })
     .addCase(loadSession.pending, state => {
       state.authStatus = AuthStatus.Pending;
     })

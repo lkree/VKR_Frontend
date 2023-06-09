@@ -1,36 +1,55 @@
-import { Spinner } from 'react-bootstrap';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { ProtectedRoute } from '~/processes/Login';
 
-const getIndexPage = () =>
-  import('~/pages/App').then(({ App }) => ({
-    element: (
-      <ProtectedRoute>
-        <App />
-      </ProtectedRoute>
-    ),
-  }));
+import { InternalRoutes } from '~/shared/const';
+import { LoadingPage } from '~/shared/ui/LoadingPage';
+
+const getLoginPage = () => import('~/pages/Login').then(({ Login }) => ({ element: <Login /> }));
+const getIndexPage = () => import('~/pages/App').then(({ App }) => ({ element: <App /> }));
 
 export const Router = () => (
   <RouterProvider
-    fallbackElement={<Spinner />}
+    fallbackElement={<LoadingPage />}
     router={createBrowserRouter([
       {
-        path: '/',
+        element: <ProtectedRoute otherwiseRoute={InternalRoutes.Main} type="anonymous" />,
         children: [
-          { lazy: getIndexPage, index: true },
-          { element: <div className="test123">123123</div>, path: '/asd' },
+          {
+            path: InternalRoutes.Login,
+            lazy: getLoginPage,
+          },
+          {
+            path: '*',
+            lazy: getLoginPage,
+          },
         ],
-        element: <Outlet />,
       },
       {
-        path: '/auth',
-        lazy: () => import('~/pages/Login').then(({ Login }) => ({ element: <Login /> })),
-      },
-      {
-        path: '*',
-        lazy: getIndexPage,
+        element: <ProtectedRoute otherwiseRoute={InternalRoutes.Login} type="auth" />,
+        children: [
+          {
+            path: InternalRoutes.Main,
+            lazy: getIndexPage,
+          },
+          {
+            path: InternalRoutes.Logout,
+            lazy: () => import('~/pages/Logout').then(({ Logout }) => ({ element: <Logout /> })),
+          },
+          {
+            path: '*',
+            lazy: getIndexPage,
+          },
+          {
+            element: <ProtectedRoute otherwiseRoute={InternalRoutes.Main} type="admin" />,
+            children: [
+              {
+                path: InternalRoutes.Admin,
+                lazy: () => import('~/pages/Admin').then(({ Admin }) => ({ element: <Admin /> })),
+              },
+            ],
+          },
+        ],
       },
     ])}
   />

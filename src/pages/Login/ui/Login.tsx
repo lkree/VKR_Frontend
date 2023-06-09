@@ -1,11 +1,13 @@
 import { Col, Container, Form, Row, Button } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
-import { useUnit } from 'effector-react';
+import { useActions } from '~/shared/lib/hooks';
 
-import { $email, isSubmitting, emailChanged, passwordChanged, $password } from '../model';
+import { actions, selectEmailPassword } from '../model';
 
 export const Login = () => {
-  const [email, password] = useUnit([$email, $password]);
+  const { email, password } = useSelector(selectEmailPassword);
+  const { submit, setEmail, setPassword } = useActions(actions);
 
   return (
     <Container fluid className="justify-content-center align-items-center vh-100 d-flex">
@@ -15,7 +17,7 @@ export const Login = () => {
             Email
           </Form.Label>
           <Col xl="4" sm="5" xs="9">
-            <Form.Control type="text" value={email} onChange={e => emailChanged(e.target.value)} />
+            <Form.Control type="text" value={email} onChange={e => setEmail(e.target.value)} />
           </Col>
         </Form.Group>
 
@@ -28,12 +30,12 @@ export const Login = () => {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={e => passwordChanged(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
             />
           </Col>
         </Form.Group>
 
-        <Button variant="primary" type="submit" onClick={() => isSubmitting()}>
+        <Button variant="primary" type="submit" onClick={submit}>
           Submit
         </Button>
       </Form>

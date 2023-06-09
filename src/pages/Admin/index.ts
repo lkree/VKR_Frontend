@@ -1,2 +1,2 @@
-export { Layout } from './ui';
-export { AdminRoute } from './config';
+export { AdminLayout as Admin } from './ui';
+export { reducers } from './model';

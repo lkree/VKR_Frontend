@@ -1,7 +1,6 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "composite": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
@@ -15,13 +14,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "declaration": false,
     "paths": {
       "~/*": [
         "src/*"
       ]
     },
-    "declaration": false,
-    "rootDir": "src",
+"rootDir": "src",
     "outDir": "build",
     "isolatedModules": true,
     "strict": true,
@@ -37,7 +36,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "exclude": [
     "vite.config.ts",

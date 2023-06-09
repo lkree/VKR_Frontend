@@ -5,9 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { EntryPoint } from '~/app';
 
-import { appStarted } from '~/shared/config';
-
-void appStarted();
+import '~/shared/assets/scss/style.scss';
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

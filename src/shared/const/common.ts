@@ -4,7 +4,8 @@ export enum AccessLevels {
 }
 
 export enum InternalRoutes {
-  Login = '/login',
+  Admin = '/admin/',
+  Login = '/login/',
+  Logout = '/logout/',
   Main = '/',
-  Admin = '/admin',
 }

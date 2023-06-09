@@ -1,3 +1,5 @@
+import { ReactEventHandler } from 'react';
+
 import { isPrimitive, isObject, isArray } from './typeGuards';
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -25,7 +27,7 @@ export const forEachValue = <T, K extends (value: Value<T>) => any>(
 ): ReturnValue<T, ReturnType<K>> =>
   isPrimitive(data)
     ? (callback(data as Value<T>) as ReturnValue<T, ReturnType<K>>)
-    : Object.entries(data).reduce((r, [name, value]) => {
+    : Object.entries(data as object).reduce((r, [name, value]) => {
         r[name as keyof typeof r] = isObject(value)
           ? forEachValue(value, callback)
           : Array.isArray(value)
@@ -50,3 +52,5 @@ export const deepClone = <T>(d: T): T => JSON.parse(JSON.stringify(d));
 export const clone = <T>(d: T): T => JSON.parse(JSON.stringify(d));
 
 export const equal = <T, K>(a: T, b: K) => JSON.stringify(a) === JSON.stringify(b);
+
+export const stopPropagation: ReactEventHandler = e => e.stopPropagation();
