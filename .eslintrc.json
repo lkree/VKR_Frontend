@@ -33,7 +33,29 @@
     "@typescript-eslint/no-unsafe-argument": 0,
     "n/no-callback-literal": 0,
     "import/no-named-default": 0,
-    "prettier/prettier": 2
+    "prettier/prettier": 2,
+    "perfectionist/sort-array-includes": [
+      "error",
+      {
+        "type": "natural",
+        "order": "asc",
+        "spread-last": true
+      }
+      ],
+      "perfectionist/sort-interfaces": [
+        "error",
+        {
+          "type": "line-length",
+          "order": "asc"
+        }
+      ],
+    "perfectionist/sort-jsx-props": [
+      "error",
+      {
+        "type": "line-length",
+        "order": "asc"
+      }
+    ]
   },
   "plugins": [
     "eslint-plugin-node",
@@ -41,6 +63,7 @@
     "eslint-plugin-prettier",
     "eslint-plugin-n",
     "@typescript-eslint",
-    "prettier"
+    "prettier",
+    "perfectionist"
   ]
 }

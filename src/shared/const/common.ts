@@ -9,3 +9,5 @@ export enum InternalRoutes {
   Logout = '/logout/',
   Main = '/',
 }
+
+export const emptyObject = {};

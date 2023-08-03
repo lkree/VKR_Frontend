@@ -1,31 +1,39 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { getMinimalLeftoversArray, setMinimalLeftovers, setMinimalLeftoversArray } from './actions';
+import { setLocalMailSettings, setReceivedMailSettings, uploadMailSettings, downloadMailSettings } from './actions';
 import type { State } from './types';
 
-const initialState: State = { minimalLeftoversArray: null, status: 'idle' };
+const initialState: State = {
+  localSettings: { port: 0, host: '', user: '', password: '', secure: false },
+  downloadingStatus: 'idle',
+  uploadingStatus: 'idle',
+  receivedSettings: null,
+};
 
-export const $minimalLeftovers = createReducer(initialState, builder => {
+export const $mailerSettings = createReducer(initialState, builder => {
   builder
-    .addCase(setMinimalLeftoversArray, (state, { payload }) => {
-      state.minimalLeftoversArray = payload;
+    .addCase(setLocalMailSettings, (state, { payload }) => {
+      state.localSettings = { ...state.localSettings, ...payload };
     })
-    .addCase(setMinimalLeftovers, (state, { payload }) => {
-      if (state.minimalLeftoversArray) {
-        state.minimalLeftoversArray = state.minimalLeftoversArray.map(minimalLeftovers =>
-          minimalLeftovers.cityName === payload.cityName ? payload : minimalLeftovers
-        );
-      } else {
-        state.minimalLeftoversArray = [payload];
-      }
+    .addCase(setReceivedMailSettings, (state, { payload }) => {
+      state.receivedSettings = payload;
     })
-    .addCase(getMinimalLeftoversArray.pending, state => {
-      state.status = 'loading';
+    .addCase(uploadMailSettings.pending, state => {
+      state.uploadingStatus = 'loading';
     })
-    .addCase(getMinimalLeftoversArray.fulfilled, state => {
-      state.status = 'idle';
+    .addCase(uploadMailSettings.fulfilled, state => {
+      state.uploadingStatus = 'idle';
     })
-    .addCase(getMinimalLeftoversArray.rejected, state => {
-      state.status = 'idle';
+    .addCase(uploadMailSettings.rejected, state => {
+      state.uploadingStatus = 'idle';
+    })
+    .addCase(downloadMailSettings.pending, state => {
+      state.downloadingStatus = 'loading';
+    })
+    .addCase(downloadMailSettings.fulfilled, state => {
+      state.downloadingStatus = 'idle';
+    })
+    .addCase(downloadMailSettings.rejected, state => {
+      state.downloadingStatus = 'idle';
     });
 });

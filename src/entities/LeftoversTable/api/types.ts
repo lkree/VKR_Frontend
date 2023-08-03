@@ -1,8 +1,11 @@
-import type { MailSettings } from '../types';
+import type { CreateRequestResponseData } from 'lkree-common-utils/api';
 
-type ResponseSuccessMailSettings = Omit<MailSettings, 'password'>;
+import type { Leftover, LeftoversList } from '../types';
 
-export type GetMailSettingsSuccessResponse = ResponseSuccessMailSettings;
+export type GetUniqueProducts = CreateRequestResponseData<void, Array<string>>;
 
-export type WriteMailSettingsRequest = Partial<MailSettings>;
-export type SetMailSettingsSuccessResponse = ResponseSuccessMailSettings;
+export type GetLeftoversList = CreateRequestResponseData<void, LeftoversList>;
+
+export type UpdateLeftover = CreateRequestResponseData<Leftover, Leftover>;
+
+export type DeleteLeftoversList = CreateRequestResponseData<void, LeftoversList>;

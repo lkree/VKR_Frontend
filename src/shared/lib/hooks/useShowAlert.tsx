@@ -1,23 +1,22 @@
 import { useMemo, useState } from 'react';
 import { Alert, AlertProps } from 'react-bootstrap';
 
-import type { Queue } from '~/shared/lib/hooks/useQueue';
-import type { Nullable } from '~/shared/lib/ts';
+import type { Nullable } from 'lkree-common-utils/ts';
+import { useTimeoutQueue, Queue } from 'lkree-react-utils';
 
-import { useUIQueue } from './useUIQueue';
+export type AlertState = AlertProps;
 
 export const useShowAlert = () => {
-  const [alertState, setAlertState] = useState<Nullable<AlertProps>>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const queue = useUIQueue(
+  const [alertState, setAlertState] = useState<Nullable<AlertState>>(null);
+  const queue: Queue<AlertState> = useTimeoutQueue(
     3000,
     () => setAlertState(queue.get()!),
     () => setAlertState(null)
-  ) as Queue<AlertProps>;
+  );
 
   return useMemo(
     () => ({
-      setAlertState: (props: AlertProps) => queue.push(props),
+      setAlertState: (props: AlertState) => queue.push(props),
       Alert: () => (
         <>
           {Boolean(alertState) && (

@@ -3,49 +3,33 @@ import { createAction } from '@reduxjs/toolkit';
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
 
 import * as api from '../api';
-import { SHARED_KEY } from '../const';
-import type { MinimalLeftovers, MinimalLeftoversArray } from '../types';
+import type { MailSettings, ReceivedMailSettings } from '../types';
 
-import { selectMinimalLeftoversArray } from './selectors';
+import { selectLocalMailerSettings, selectReceivedMailerSettings } from './selectors';
 
 const computeActionName = (actionName: string) => `minimalLeftovers/${actionName}`;
 
-export const setMinimalLeftoversArray = createAction(
-  computeActionName('setMinimalLeftoversArray'),
-  (mla: MinimalLeftoversArray) => ({
-    payload: [...mla].sort((a, b) => {
-      const aName = a.cityName.toLocaleLowerCase();
-      const bName = b.cityName.toLowerCase();
+export const setLocalMailSettings = createAction<Partial<MailSettings>>(computeActionName('setLocalMailSettings'));
+export const setReceivedMailSettings = createAction<ReceivedMailSettings>(computeActionName('setReceivedMailSettings'));
 
-      if (bName === SHARED_KEY) return -1;
-
-      if (aName < bName) return -1;
-      if (aName > bName) return 1;
-
-      return 0;
-    }),
-  })
+export const downloadMailSettings = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('downloadMailSettings'),
+  (_, { dispatch }) =>
+    api.getMailSettings().then(d => {
+      dispatch(setLocalMailSettings(d));
+      dispatch(setReceivedMailSettings(d));
+    }) satisfies Promise<void>
 );
 
-export const setMinimalLeftovers = createAction<MinimalLeftovers>(computeActionName('setMinimalLeftovers'));
+export const uploadMailSettings = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('uploadMailSettings'),
+  (_, { dispatch, getState }) => {
+    const state = getState();
+    const settings = { ...selectReceivedMailerSettings(state), ...selectLocalMailerSettings(state) };
 
-export const getMinimalLeftoversArray = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('getMinimalLeftoversArray'),
-  (_, { dispatch }) => api.getMinimalLeftoversArray().then(d => dispatch(setMinimalLeftoversArray(d))) as Promise<void>
-);
-
-export const writeMinimalLeftover = createAppAsyncThunk<Promise<void>, MinimalLeftovers>(
-  computeActionName('writeMinimalLeftover'),
-  (minimalLeftovers, { dispatch, getState }) =>
-    api
-      .writeMinimalLeftovers(minimalLeftovers)
-      .then(d =>
-        d
-          ? dispatch(setMinimalLeftovers(d))
-          : dispatch(
-              setMinimalLeftoversArray(
-                selectMinimalLeftoversArray(getState())?.filter(it => it.cityName !== minimalLeftovers.cityName) ?? []
-              )
-            )
-      ) as Promise<void>
+    return api.writeMailSettings(settings).then(d => {
+      dispatch(setLocalMailSettings(d));
+      dispatch(setReceivedMailSettings(d));
+    }) satisfies Promise<void>;
+  }
 );

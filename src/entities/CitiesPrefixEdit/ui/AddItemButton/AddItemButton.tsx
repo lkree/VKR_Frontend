@@ -3,6 +3,8 @@ import { useRef } from 'react';
 import { Button, Col, Form, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
+import { stopPropagation, useFieldFocus, useWindowEvent } from 'lkree-react-utils';
+
 import {
   selectNewCityName,
   selectNewCityPrefix,
@@ -10,8 +12,7 @@ import {
   actions,
 } from '~/entities/CitiesPrefixEdit/model';
 
-import { stopPropagation } from '~/shared/lib/helpers';
-import { useActions, useFieldFocus, useWindowEvent } from '~/shared/lib/hooks';
+import { useActions } from '~/shared/lib/hooks';
 
 export const AddItemButton: FC = () => {
   const cityPrefixInputRef = useRef<HTMLInputElement>(null);
@@ -49,10 +50,10 @@ export const AddItemButton: FC = () => {
 
   return (
     <OverlayTrigger
-      show={showNewCityForm}
       trigger="click"
-      onToggle={() => setShowNewCityForm(!showNewCityForm)}
       placement="left"
+      show={showNewCityForm}
+      onToggle={() => setShowNewCityForm(!showNewCityForm)}
       overlay={
         <Popover>
           <Popover.Header as="h3">Новый город</Popover.Header>
@@ -62,20 +63,20 @@ export const AddItemButton: FC = () => {
               <Row>
                 <Col>
                   <Form.Control
-                    ref={cityPrefixInputRef}
-                    placeholder="Префикс"
                     value={cityPrefix}
+                    placeholder="Префикс"
+                    ref={cityPrefixInputRef}
                     onChange={e => setNewCityPrefix(e.target.value)}
                   />
                 </Col>
                 <Col>
-                  <Form.Control placeholder="Имя" value={cityName} onChange={e => setNewCityName(e.target.value)} />
+                  <Form.Control value={cityName} placeholder="Имя" onChange={e => setNewCityName(e.target.value)} />
                 </Col>
               </Row>
               {cityName && cityPrefix && (
                 <Row>
                   <Col>
-                    <Button onClick={() => void saveNewCityItem()} variant="success">
+                    <Button variant="success" onClick={() => void saveNewCityItem()}>
                       Сохранить
                     </Button>
                   </Col>

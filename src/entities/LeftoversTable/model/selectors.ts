@@ -1,15 +1,10 @@
 import type { State } from './types';
 
 interface DefaultRootState {
-  $mailerSettings: State;
+  $leftoversTable: State;
 }
 
-const selectMailerSettings = (state: DefaultRootState) => state.$mailerSettings;
+const selectLeftoversTableState = (state: DefaultRootState) => state.$leftoversTable;
 
-export const selectIsDownloading = (state: DefaultRootState) =>
-  selectMailerSettings(state).downloadingStatus === 'loading';
-export const selectIsUploading = (state: DefaultRootState) => selectMailerSettings(state).uploadingStatus === 'loading';
-export const selectLocalMailerSettings = (state: DefaultRootState) => selectMailerSettings(state).localSettings;
-export const selectReceivedMailerSettings = (state: DefaultRootState) => selectMailerSettings(state).receivedSettings;
-export const selectIsAllDataReady = (state: DefaultRootState) =>
-  Object.entries(selectLocalMailerSettings(state)).every(([key, value]) => key === 'secure' || Boolean(value));
+export const selectLeftoversList = (state: DefaultRootState) => selectLeftoversTableState(state).leftoversList;
+export const selectIsLoading = (state: DefaultRootState) => selectLeftoversTableState(state).status === 'loading';

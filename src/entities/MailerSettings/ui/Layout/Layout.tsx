@@ -1,56 +1,17 @@
-import { FormEvent, memo, useCallback } from 'react';
+import { FormEvent, useCallback } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-import { selectLocalMailerSettings, selectReceivedMailerSettings } from '~/entities/MailerSettings/model';
+import { useInitDownloadData } from 'lkree-react-utils';
 
-import { useActions, useInitDownloadData } from '~/shared/lib/hooks';
+import { useActions } from '~/shared/lib/hooks';
+import { actions as commonActions } from '~/shared/models/commonStores';
 
-import { actions } from '../model';
-import type { MailSettings } from '../types';
-
-interface Props {
-  field: keyof MailSettings;
-  title: string;
-  type: 'text' | 'number' | 'checkbox' | 'password';
-  placeholder?: string;
-  colClassName?: string;
-}
-
-const FormField = memo(({ field, type, title, placeholder, colClassName }: Props) => {
-  const value = useSelector(selectLocalMailerSettings)[field];
-  const { setLocalMailSettings } = useActions(actions);
-  const isCheckbox = type === 'checkbox';
-  const Input = isCheckbox ? Form.Check : Form.Control;
-
-  return (
-    <Form.Group as={Row} className="mb-3" controlId={`input${field}`}>
-      <Form.Label column sm={2}>
-        {title}
-      </Form.Label>
-
-      <Col sm={10} className={colClassName}>
-        <Input
-          type={type as 'checkbox'}
-          placeholder={placeholder}
-          onChange={e =>
-            setLocalMailSettings({
-              [field]: isCheckbox
-                ? (e.target as HTMLInputElement).checked
-                : type === 'number'
-                ? +e.target.value
-                : e.target.value,
-            })
-          }
-          {...{ [isCheckbox ? 'checked' : 'value']: value }}
-        />
-      </Col>
-    </Form.Group>
-  );
-});
+import { selectIsAllDataReady, selectIsUploading, selectReceivedMailerSettings, actions } from '../../model';
+import { FormField } from '../FormField';
 
 const FIELDS_MAP = [
-  { field: 'user', type: 'text', title: 'Пользователь', placeholder: 'example@mail.ru' },
+  { field: 'user', type: 'email', title: 'Пользователь', placeholder: 'example@mail.ru' },
   { field: 'password', type: 'password', title: 'Пароль', placeholder: 'пароль от почты' },
   { field: 'host', type: 'text', title: 'Хост', placeholder: 'smtp.mail.ru' },
   { field: 'port', type: 'number', title: 'Порт', placeholder: '465' },
@@ -59,13 +20,19 @@ const FIELDS_MAP = [
 
 export const Layout = () => {
   const receivedMailerSettings = useSelector(selectReceivedMailerSettings);
+  const isAllDataReady = useSelector(selectIsAllDataReady);
+  const isUploading = useSelector(selectIsUploading);
   const { downloadMailSettings, uploadMailSettings } = useActions(actions);
+  const { addAlertsSettings } = useActions(commonActions);
 
   useInitDownloadData({ data: receivedMailerSettings, downloadFn: downloadMailSettings });
 
   const onSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
-    void uploadMailSettings();
+
+    void uploadMailSettings()
+      .unwrap()
+      .then(() => addAlertsSettings({ variant: 'success', children: 'Данные сохранены' }));
   }, []);
 
   if (!receivedMailerSettings) return null;
@@ -78,7 +45,9 @@ export const Layout = () => {
 
       <Form.Group as={Row} className="mb-3">
         <Col sm={{ span: 10, offset: 0 }}>
-          <Button type="submit">Сохранить</Button>
+          <Button type="submit" disabled={isUploading || !isAllDataReady}>
+            Сохранить
+          </Button>
         </Col>
       </Form.Group>
     </Form>

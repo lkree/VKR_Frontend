@@ -1,39 +1,25 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { setLocalMailSettings, setReceivedMailSettings, uploadMailSettings, downloadMailSettings } from './actions';
+import { setLeftoversList, getLeftoversList } from './actions';
 import type { State } from './types';
 
 const initialState: State = {
-  localSettings: { port: 0, host: '', user: '', password: '', secure: false },
-  downloadingStatus: 'idle',
-  uploadingStatus: 'idle',
-  receivedSettings: null,
+  leftoversList: null,
+  status: 'idle',
 };
 
-export const $mailerSettings = createReducer(initialState, builder => {
+export const $leftoversTable = createReducer(initialState, builder => {
   builder
-    .addCase(setLocalMailSettings, (state, { payload }) => {
-      state.localSettings = { ...state.localSettings, ...payload };
+    .addCase(setLeftoversList, (state, { payload }) => {
+      state.leftoversList = payload;
     })
-    .addCase(setReceivedMailSettings, (state, { payload }) => {
-      state.receivedSettings = payload;
+    .addCase(getLeftoversList.pending, state => {
+      state.status = 'loading';
     })
-    .addCase(uploadMailSettings.pending, state => {
-      state.uploadingStatus = 'loading';
+    .addCase(getLeftoversList.fulfilled, state => {
+      state.status = 'idle';
     })
-    .addCase(uploadMailSettings.fulfilled, state => {
-      state.uploadingStatus = 'idle';
-    })
-    .addCase(uploadMailSettings.rejected, state => {
-      state.uploadingStatus = 'idle';
-    })
-    .addCase(downloadMailSettings.pending, state => {
-      state.downloadingStatus = 'loading';
-    })
-    .addCase(downloadMailSettings.fulfilled, state => {
-      state.downloadingStatus = 'idle';
-    })
-    .addCase(downloadMailSettings.rejected, state => {
-      state.downloadingStatus = 'idle';
+    .addCase(getLeftoversList.rejected, state => {
+      state.status = 'idle';
     });
 });

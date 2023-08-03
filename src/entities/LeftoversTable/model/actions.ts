@@ -1,35 +1,37 @@
 import { createAction } from '@reduxjs/toolkit';
+import type { Nullable } from 'lkree-common-utils/ts';
 
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
 
 import * as api from '../api';
-import type { MailSettings, ReceivedMailSettings } from '../types';
+import type { Leftover, LeftoversList } from '../types';
 
-import { selectLocalMailerSettings, selectReceivedMailerSettings } from './selectors';
+import { selectLeftoversList } from './selectors';
 
-const computeActionName = (actionName: string) => `minimalLeftovers/${actionName}`;
+const computeActionName = (actionName: string) => `leftovers/${actionName}`;
 
-export const setLocalMailSettings = createAction<Partial<MailSettings>>(computeActionName('setLocalMailSettings'));
-export const setReceivedMailSettings = createAction<ReceivedMailSettings>(computeActionName('setReceivedMailSettings'));
+export const setLeftoversList = createAction<Nullable<LeftoversList>>(computeActionName('setLeftoversList'));
 
-export const downloadMailSettings = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('downloadMailSettings'),
-  (_, { dispatch }) =>
-    api.getMailSettings().then(d => {
-      dispatch(setLocalMailSettings(d));
-      dispatch(setReceivedMailSettings(d));
+export const getLeftoversList = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('getLeftoversList'),
+  (_, { dispatch }) => api.getLeftoversList().then(d => dispatch(setLeftoversList(d))) as Promise<void>
+);
+
+export const updateLeftover = createAppAsyncThunk<Promise<void>, Leftover>(
+  computeActionName('updateLeftover'),
+  (leftover, { dispatch, getState }) =>
+    api.updateLeftover(leftover).then(d => {
+      const leftoversList = selectLeftoversList(getState());
+
+      dispatch(
+        setLeftoversList(
+          leftoversList ? leftoversList.map(leftover => (leftover.cityName === d.cityName ? d : leftover)) : [d]
+        )
+      );
     }) satisfies Promise<void>
 );
 
-export const uploadMailSettings = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('uploadMailSettings'),
-  (_, { dispatch, getState }) => {
-    const state = getState();
-    const settings = { ...selectReceivedMailerSettings(state), ...selectLocalMailerSettings(state) };
-
-    return api.writeMailSettings(settings).then(d => {
-      dispatch(setLocalMailSettings(d));
-      dispatch(setReceivedMailSettings(d));
-    }) satisfies Promise<void>;
-  }
+export const deleteLeftoversList = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('getLeftoversList'),
+  (_, { dispatch }) => api.deleteLeftoversList().then(d => dispatch(setLeftoversList(d))) as Promise<void>
 );

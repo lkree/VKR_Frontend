@@ -1,2 +1,2 @@
 export { AdminLayout as Admin } from './ui';
-export { reducers } from './model';
+export { reducers as adminReducer } from './model';

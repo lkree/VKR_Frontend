@@ -20,7 +20,7 @@
         "src/*"
       ]
     },
-"rootDir": "src",
+    "rootDir": "src",
     "outDir": "build",
     "isolatedModules": true,
     "strict": true,

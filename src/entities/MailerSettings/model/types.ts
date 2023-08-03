@@ -1,8 +1,10 @@
-import type { Nullable } from '~/shared/lib/ts';
+import type { Nullable } from 'lkree-common-utils/ts';
 
-import type { MinimalLeftovers } from '../types';
+import type { MailSettings, ReceivedMailSettings } from '../types';
 
 export interface State {
-  minimalLeftoversArray: Nullable<Array<MinimalLeftovers>>;
-  status: 'idle' | 'loading';
+  localSettings: MailSettings;
+  uploadingStatus: 'loading' | 'idle';
+  downloadingStatus: 'loading' | 'idle';
+  receivedSettings: Nullable<ReceivedMailSettings>;
 }

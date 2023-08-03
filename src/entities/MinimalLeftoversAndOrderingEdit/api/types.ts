@@ -1,7 +1,12 @@
-import type { Nullable } from '~/shared/lib/ts';
+import type { CreateRequestResponseData } from 'lkree-common-utils/api';
+import type { Nullable } from 'lkree-common-utils/ts';
 
-import type { MinimalLeftovers, MinimalLeftoversArray } from '../types';
+import type { MinimalLeftovers, MinimalLeftoversList } from '../types';
 
-export type GetSetMinimalLeftoversArraySuccessResponse = MinimalLeftoversArray;
+export type GetMinimalLeftoversList = CreateRequestResponseData<void, MinimalLeftoversList>;
 
-export type WriteMinimalLeftovers = Nullable<MinimalLeftovers>;
+export type WriteMinimalLeftovers = CreateRequestResponseData<MinimalLeftovers, Nullable<MinimalLeftovers>>;
+
+export type WriteMinimalLeftoversList = CreateRequestResponseData<MinimalLeftoversList, MinimalLeftoversList>;
+
+export type DeleteMinimalLeftoversList = CreateRequestResponseData<void, MinimalLeftoversList>;

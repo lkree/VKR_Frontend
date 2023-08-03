@@ -12,7 +12,7 @@ export const CitiesList = () => {
   return (
     <div className="d-flex gap-3 flex-wrap">
       {cities!.map(([cityName, cityPrefix]) => (
-        <CityBadge onClose={c => void deleteCity(c)} cityName={cityName} cityPrefix={cityPrefix} />
+        <CityBadge cityName={cityName} cityPrefix={cityPrefix} onClose={c => void deleteCity(c)} />
       ))}
     </div>
   );

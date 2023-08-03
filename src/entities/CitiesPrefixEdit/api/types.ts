@@ -3,10 +3,10 @@ export type CitiesPrefixes = Array<[string, string]>;
 export type SuccessResponse = CitiesPrefixes;
 
 export interface AddCityRequest {
-  cityName: string;
-  cityPrefix: string;
+  name: string;
+  prefix: string;
 }
 
 export interface RemoveCityRequest {
-  cityPrefix: string;
+  prefix: string;
 }

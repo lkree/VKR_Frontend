@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { actions as leftoversTableActions } from '~/entities/LeftoversTable';
 import { actions as minimalLeftoversAndOrderingActions } from '~/entities/MinimalLeftoversAndOrderingEdit';
 
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
@@ -27,11 +28,22 @@ export const getUploadDate = createAppAsyncThunk<Promise<void>, void>(
       ) as Promise<void>
 );
 
-export const acceptFile = createAppAsyncThunk<Promise<void>, void>(
+export const acceptFile = createAppAsyncThunk<Promise<void>, boolean>(
   computeActionName('acceptFile'),
-  (_, { dispatch }) =>
-    api.acceptFile().then(({ uploadDate, lastUpdatedDate = null }) => {
+  (notify, { dispatch }) =>
+    api.acceptFile(notify).then(({ uploadDate, lastUpdatedDate = null }) => {
       dispatch(setDate({ uploadDate, lastUpdatedDate }));
-      void dispatch(minimalLeftoversAndOrderingActions.getMinimalLeftoversArray());
+      void dispatch(minimalLeftoversAndOrderingActions.getMinimalLeftoversList());
+      void dispatch(leftoversTableActions.getLeftoversList());
     }) satisfies Promise<void>
+);
+
+export const deleteAllLeftovers = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('deleteAllLeftovers'),
+  async (_, { dispatch }) => {
+    await Promise.all([
+      dispatch(minimalLeftoversAndOrderingActions.deleteMinimalLeftoversList()),
+      dispatch(leftoversTableActions.deleteLeftoversList()),
+    ]);
+  }
 );

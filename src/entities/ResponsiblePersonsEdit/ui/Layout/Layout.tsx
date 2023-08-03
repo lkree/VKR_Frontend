@@ -1,36 +1,42 @@
 import type { FC } from 'react';
-import { Col, Form, Row } from 'react-bootstrap';
+import { useCallback } from 'react';
+import { Form } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
-import { useActions, useInitDownloadData } from '~/shared/lib/hooks';
+import { useInitDownloadData } from 'lkree-react-utils';
 
-import { selectResponsiblePersonArray, actions } from '../model';
+import { useActions } from '~/shared/lib/hooks';
+import { actions as commonActions } from '~/shared/models/commonStores';
+
+import { selectResponsiblePersonArray, actions } from '../../model';
+import type { ResponsiblePerson } from '../../types';
+import { FormField } from '../FormField';
 
 export const Layout: FC = () => {
   const responsiblePersonArray = useSelector(selectResponsiblePersonArray);
-  const { downloadResponsiblePersonsArray, setResponsiblePerson } = useActions(actions);
+  const { downloadResponsiblePersonsArray, uploadResponsiblePerson, sendTestEmail } = useActions(actions);
+  const { addAlertsSettings } = useActions(commonActions);
 
   useInitDownloadData({ data: responsiblePersonArray, downloadFn: downloadResponsiblePersonsArray });
+
+  const onSaveClick = useCallback((responsiblePerson: ResponsiblePerson) => {
+    void uploadResponsiblePerson(responsiblePerson)
+      .unwrap()
+      .then(() => addAlertsSettings({ variant: 'success', children: 'Запись успешна сохранена' }));
+  }, []);
+
+  const onTestEmailClick = useCallback((email: string) => {
+    void sendTestEmail(email)
+      .unwrap()
+      .then(() => addAlertsSettings({ variant: 'success', children: 'Сообщение отправлено' }));
+  }, []);
 
   if (!responsiblePersonArray) return null;
 
   return (
-    <Form>
+    <Form className="d-flex flex-column gap-3">
       {responsiblePersonArray.map(person => (
-        <Form.Group key={person.cityName} as={Row} className="mb-3" controlId={`input${person.cityName}`}>
-          <Form.Label column sm={2}>
-            {person.cityName}
-          </Form.Label>
-
-          <Col sm={10}>
-            <Form.Control
-              type="text"
-              placeholder="test@email.ru"
-              onChange={e => setResponsiblePerson({ cityName: person.cityName, email: e.target.value })}
-              value={value}
-            />
-          </Col>
-        </Form.Group>
+        <FormField person={person} onSave={onSaveClick} key={person.cityName} onTestEmail={onTestEmailClick} />
       ))}
     </Form>
   );

@@ -17,6 +17,7 @@ export interface User {
   accessLevel: AccessLevels;
   email: string;
   id: string;
+  cityBounding?: string;
 }
 
 export type LoginResponse = {

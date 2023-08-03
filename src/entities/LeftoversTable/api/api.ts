@@ -1,19 +1,25 @@
-import { BuiltInHeaders, call } from '~/shared/api/common';
+import { ApiFunction, BuiltInHeaders } from 'lkree-common-utils/api';
+
+import { call } from '~/shared/api/common';
 
 import { Methods } from './const';
-import type { WriteMailSettingsRequest, GetMailSettingsSuccessResponse, SetMailSettingsSuccessResponse } from './types';
+import type { UpdateLeftover, GetLeftoversList, GetUniqueProducts, DeleteLeftoversList } from './types';
 
-export const writeMailSettings = (writeMailSettingsRequest: WriteMailSettingsRequest) =>
-  call<SetMailSettingsSuccessResponse>({
-    url: Methods.WriteEmailSettings,
+export const updateLeftover: ApiFunction<UpdateLeftover> = leftover =>
+  call({
+    url: Methods.Update,
     options: {
       method: 'POST',
-      body: writeMailSettingsRequest,
+      body: { leftover },
       headers: { builtIn: [BuiltInHeaders.JSON] },
     },
   });
 
-export const getMailSettings = () => call<GetMailSettingsSuccessResponse>({ url: Methods.GetEmailSettings });
+export const getUniqueProducts: ApiFunction<GetUniqueProducts> = () => call({ url: Methods.GetUniqueProducts });
+
+export const getLeftoversList: ApiFunction<GetLeftoversList> = () => call({ url: Methods.GetAll });
+
+export const deleteLeftoversList: ApiFunction<DeleteLeftoversList> = () => call({ url: Methods.DeleteAll });
 
 /*
 {

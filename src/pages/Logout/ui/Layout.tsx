@@ -8,7 +8,7 @@ export const Layout = () => {
   const { logout } = useActions(actions);
 
   useLayoutEffect(() => {
-    logout();
+    void logout();
   }, []);
 
   return null;

@@ -1,4 +1,4 @@
-import type { Nullable } from '~/shared/lib/ts';
+import type { Nullable } from 'lkree-common-utils/ts';
 
 export interface State {
   uploadDate: Nullable<number>;

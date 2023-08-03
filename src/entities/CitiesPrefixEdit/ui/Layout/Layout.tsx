@@ -1,6 +1,7 @@
 import type { FC } from 'react';
-import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useInitDownloadData } from 'lkree-react-utils';
 
 import { useActions } from '~/shared/lib/hooks';
 
@@ -12,9 +13,7 @@ export const Layout: FC = () => {
   const storeCities = useSelector(selectCities);
   const { downloadCities } = useActions(actions);
 
-  useLayoutEffect(() => {
-    void downloadCities();
-  }, []);
+  useInitDownloadData({ data: storeCities, downloadFn: downloadCities });
 
   if (!storeCities) return null;
 

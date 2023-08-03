@@ -20,7 +20,7 @@ export const ProtectedRoute: FC<Props> = ({ otherwiseRoute, type }) => {
     (type === 'anonymous' && isLoggedIn) ||
     (type === 'admin' && (!isAdmin || !isLoggedIn))
   ) {
-    return <Navigate to={otherwiseRoute} replace />;
+    return <Navigate replace to={otherwiseRoute} />;
   }
 
   return <Outlet />;

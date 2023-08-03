@@ -3,6 +3,8 @@ import { Col, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
+import cn from 'classnames';
+
 import { Navigation } from '~/entities/Navigation';
 import { UserInfo } from '~/entities/UserInfo';
 
@@ -12,9 +14,10 @@ import { Layout } from '~/shared/ui/Layout';
 
 interface Props {
   body: ReactNode;
+  showNavigation?: boolean;
 }
 
-export const UserLayout: FC<Props> = ({ body }) => {
+export const UserLayout: FC<Props> = ({ body, showNavigation = true }) => {
   const user = useSelector(selectUser);
 
   if (!user) return <Navigate to={InternalRoutes.Login} />;
@@ -22,10 +25,12 @@ export const UserLayout: FC<Props> = ({ body }) => {
   return (
     <Layout
       header={
-        <Row>
-          <Col>
-            <Navigation />
-          </Col>
+        <Row className={cn({ 'justify-content-end': !showNavigation })}>
+          {showNavigation && (
+            <Col>
+              <Navigation />
+            </Col>
+          )}
           <Col xs="auto" className="d-flex">
             <UserInfo email={user.email} />
           </Col>

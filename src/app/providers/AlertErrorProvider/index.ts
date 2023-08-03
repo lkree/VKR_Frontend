@@ -1,1 +1,1 @@
-export * from './withErrorAlert';
+export * from './AlertErrorProvider';

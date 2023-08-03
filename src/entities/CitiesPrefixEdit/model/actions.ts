@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { downloadResponsiblePersonsArray } from '~/entities/ResponsiblePersonsEdit/model/actions';
+
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
 
 import { addCityPrefix, CitiesPrefixes, getAllCitiesPrefixes, removeCityPrefix } from '../api';
@@ -23,27 +25,33 @@ export const downloadCities = createAppAsyncThunk<Promise<void>, void>(
   }
 );
 
-export const saveNewCityItem = createAppAsyncThunk<void, void>(
+export const saveNewCityItem = createAppAsyncThunk<Promise<void> | void, void>(
   computeActionName('saveNewCityItem'),
   (_, { getState, dispatch }) => {
     const state = getState();
 
-    const cityPrefix = selectNewCityPrefix(state);
-    const cityName = selectNewCityName(state);
+    const prefix = selectNewCityPrefix(state);
+    const name = selectNewCityName(state);
 
-    if (cityName && cityPrefix) {
+    if (name && prefix) {
       dispatch(setShowNewCityForm(false));
       dispatch(setNewCityName(''));
       dispatch(setNewCityPrefix(''));
 
-      void addCityPrefix({ cityPrefix, cityName }).then(cities => dispatch(setCities(cities)));
+      return addCityPrefix({ prefix, name })
+        .then(cities => dispatch(setCities(cities)))
+        .then(() => dispatch(downloadResponsiblePersonsArray())) as Promise<void>;
     }
+
+    return void 0;
   }
 );
 
-export const deleteCity = createAppAsyncThunk<void, CitiesPrefixes[number]>(
+export const deleteCity = createAppAsyncThunk<Promise<void>, CitiesPrefixes[number]>(
   computeActionName('deleteCity'),
-  (cityToRemove, { dispatch }) => {
-    void removeCityPrefix({ cityPrefix: cityToRemove[1] }).then(d => dispatch(setCities(d)));
-  }
+  (cityToRemove, { dispatch }) =>
+    removeCityPrefix({ prefix: cityToRemove[1] }).then(d => {
+      dispatch(setCities(d));
+      void dispatch(downloadResponsiblePersonsArray());
+    }) satisfies Promise<void>
 );

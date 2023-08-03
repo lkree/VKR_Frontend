@@ -1,19 +1,35 @@
-import { BuiltInHeaders, call } from '~/shared/api/common';
+import { BuiltInHeaders } from 'lkree-common-utils/api';
 
-import { Methods } from './const';
-import type { WriteMailSettingsRequest, GetMailSettingsSuccessResponse, SetMailSettingsSuccessResponse } from './types';
+import { call } from '~/shared/api/common';
 
-export const writeMailSettings = (writeMailSettingsRequest: WriteMailSettingsRequest) =>
-  call<SetMailSettingsSuccessResponse>({
-    url: Methods.WriteEmailSettings,
+import { Methods, EmailMethods } from './const';
+import type {
+  WriteResponsiblePersonRequest,
+  WriteResponsiblePersonResponse,
+  GetResponsiblePersonArrayResponse,
+} from './types';
+
+export const writeResponsiblePerson = (responsiblePerson: WriteResponsiblePersonRequest) =>
+  call<WriteResponsiblePersonResponse>({
+    url: Methods.Write,
     options: {
       method: 'POST',
-      body: writeMailSettingsRequest,
+      body: { responsiblePerson },
       headers: { builtIn: [BuiltInHeaders.JSON] },
     },
   });
 
-export const getMailSettings = () => call<GetMailSettingsSuccessResponse>({ url: Methods.GetEmailSettings });
+export const getResponsiblePersonArray = () => call<GetResponsiblePersonArrayResponse>({ url: Methods.GetAll });
+
+export const sendTestEmail = (email: string) =>
+  call<true>({
+    url: EmailMethods.SendTestEmail,
+    options: {
+      method: 'POST',
+      body: { email },
+      headers: { builtIn: [BuiltInHeaders.JSON] },
+    },
+  });
 
 /*
 {

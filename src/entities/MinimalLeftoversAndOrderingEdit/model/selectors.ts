@@ -7,5 +7,7 @@ interface DefaultRootState {
 const selectMinimalLeftoversState = (state: DefaultRootState) => state.$minimalLeftovers;
 
 export const selectIsLoading = (state: DefaultRootState) => selectMinimalLeftoversState(state).status === 'loading';
-export const selectMinimalLeftoversArray = (state: DefaultRootState) =>
+export const selectMinimalLeftoversList = (state: DefaultRootState) =>
   selectMinimalLeftoversState(state).minimalLeftoversArray;
+export const selectMinimalLeftoversListIsEmpty = (state: DefaultRootState) =>
+  (selectMinimalLeftoversState(state).minimalLeftoversArray?.length ?? 0) === 0;

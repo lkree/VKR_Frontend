@@ -13,7 +13,7 @@ export const Router = () => (
     fallbackElement={<LoadingPage />}
     router={createBrowserRouter([
       {
-        element: <ProtectedRoute otherwiseRoute={InternalRoutes.Main} type="anonymous" />,
+        element: <ProtectedRoute type="anonymous" otherwiseRoute={InternalRoutes.Main} />,
         children: [
           {
             path: InternalRoutes.Login,
@@ -26,7 +26,7 @@ export const Router = () => (
         ],
       },
       {
-        element: <ProtectedRoute otherwiseRoute={InternalRoutes.Login} type="auth" />,
+        element: <ProtectedRoute type="auth" otherwiseRoute={InternalRoutes.Login} />,
         children: [
           {
             path: InternalRoutes.Main,
@@ -41,7 +41,7 @@ export const Router = () => (
             lazy: getIndexPage,
           },
           {
-            element: <ProtectedRoute otherwiseRoute={InternalRoutes.Main} type="admin" />,
+            element: <ProtectedRoute type="admin" otherwiseRoute={InternalRoutes.Main} />,
             children: [
               {
                 path: InternalRoutes.Admin,

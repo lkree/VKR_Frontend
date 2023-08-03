@@ -1,5 +1,6 @@
 export interface Product {
-  name: string;
+  nomenclature: string;
+  orderingCount: number;
   minimalLeftover: number;
 }
 
@@ -8,4 +9,4 @@ export interface MinimalLeftovers {
   products: Array<Product>;
 }
 
-export type MinimalLeftoversArray = Array<MinimalLeftovers>;
+export type MinimalLeftoversList = Array<MinimalLeftovers>;

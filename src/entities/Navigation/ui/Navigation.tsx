@@ -10,11 +10,11 @@ import css from './Navigation.module.sass';
 const ITEMS = [
   {
     to: InternalRoutes.Main,
-    text: 'Main',
+    text: 'Главная',
   },
   {
     to: InternalRoutes.Admin,
-    text: 'Admin',
+    text: 'Панель администратора',
   },
 ];
 
@@ -22,10 +22,10 @@ export const Navigation = () => {
   const location = useLocation();
 
   return (
-    <Nav className={css.wrapper} variant="tabs" activeKey={location.pathname}>
+    <Nav variant="tabs" className={css.wrapper} activeKey={location.pathname}>
       {ITEMS.map(({ to, text }) => (
-        <Nav.Item className={css.item} key={to}>
-          <Link className={cn(css.link, { [css.linkActive!]: to === location.pathname })} to={to}>
+        <Nav.Item key={to} className={css.item}>
+          <Link to={to} className={cn(css.link, { [css.linkActive!]: to === location.pathname })}>
             {text}
           </Link>
         </Nav.Item>

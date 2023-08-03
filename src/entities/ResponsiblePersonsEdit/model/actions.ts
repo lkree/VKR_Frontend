@@ -3,33 +3,32 @@ import { createAction } from '@reduxjs/toolkit';
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
 
 import * as api from '../api';
-import type { MailSettings, ReceivedMailSettings } from '../types';
+import type { ResponsiblePerson, ResponsiblePersonArray } from '../types';
 
-import { selectLocalMailerSettings, selectReceivedMailerSettings } from './selectors';
+const computeActionName = (actionName: string) => `responsiblePersons/${actionName}`;
 
-const computeActionName = (actionName: string) => `minimalLeftovers/${actionName}`;
+export const setResponsiblePersonsArray = createAction<ResponsiblePersonArray>(
+  computeActionName('setResponsiblePersonsArray')
+);
 
-export const setLocalMailSettings = createAction<Partial<MailSettings>>(computeActionName('setLocalMailSettings'));
-export const setReceivedMailSettings = createAction<ReceivedMailSettings>(computeActionName('setReceivedMailSettings'));
+export const setResponsiblePerson = createAction<ResponsiblePerson>(computeActionName('setResponsiblePerson'));
 
-export const downloadMailSettings = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('getMailSettings'),
+export const downloadResponsiblePersonsArray = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('downloadResponsiblePersonsArray'),
   (_, { dispatch }) =>
-    api.getMailSettings().then(d => {
-      dispatch(setLocalMailSettings(d));
-      dispatch(setReceivedMailSettings(d));
+    api.getResponsiblePersonArray().then(d => {
+      dispatch(setResponsiblePersonsArray(d));
     }) satisfies Promise<void>
 );
 
-export const uploadMailSettings = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('writeMailSettings'),
-  (_, { dispatch, getState }) => {
-    const state = getState();
-    const settings = { ...selectReceivedMailerSettings(state), ...selectLocalMailerSettings(state) };
+export const uploadResponsiblePerson = createAppAsyncThunk<Promise<void>, ResponsiblePerson>(
+  computeActionName('uploadResponsiblePerson'),
+  (responsiblePerson, { dispatch }) =>
+    api.writeResponsiblePerson(responsiblePerson).then(d => {
+      dispatch(setResponsiblePerson(d));
+    }) satisfies Promise<void>
+);
 
-    return api.writeMailSettings(settings).then(d => {
-      dispatch(setLocalMailSettings(d));
-      dispatch(setReceivedMailSettings(d));
-    }) satisfies Promise<void>;
-  }
+export const sendTestEmail = createAppAsyncThunk<Promise<true>, string>(computeActionName('sendTestEmail'), email =>
+  api.sendTestEmail(email)
 );

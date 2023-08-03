@@ -1,10 +1,7 @@
-import type { Nullable } from '~/shared/lib/ts';
+import type { Nullable } from 'lkree-common-utils/ts';
 
-import type { MailSettings, ReceivedMailSettings } from '../types';
+import type { ResponsiblePersonArray } from '../types';
 
 export interface State {
-  localSettings: MailSettings;
-  receivedSettings: Nullable<ReceivedMailSettings>;
-  downloadingStatus: 'loading' | 'idle';
-  uploadingStatus: 'loading' | 'idle';
+  responsiblePersonArray: Nullable<ResponsiblePersonArray>;
 }

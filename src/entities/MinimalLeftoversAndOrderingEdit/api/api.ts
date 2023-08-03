@@ -1,31 +1,39 @@
-import { BuiltInHeaders, call } from '~/shared/api/common';
+import { BuiltInHeaders, ApiFunction } from 'lkree-common-utils/api';
 
-import type { MinimalLeftoversArray, MinimalLeftovers } from '../types';
+import { call } from '~/shared/api/common';
 
 import { Methods } from './const';
-import type { GetSetMinimalLeftoversArraySuccessResponse, WriteMinimalLeftovers } from './types';
+import type {
+  WriteMinimalLeftoversList,
+  GetMinimalLeftoversList,
+  WriteMinimalLeftovers,
+  DeleteMinimalLeftoversList,
+} from './types';
 
-export const writeMinimalLeftoversArray = (minimalLeftoversArray: MinimalLeftoversArray) =>
-  call<GetSetMinimalLeftoversArraySuccessResponse>({
+export const writeMinimalLeftoversList: ApiFunction<WriteMinimalLeftoversList> = minimalLeftoversList =>
+  call({
     url: Methods.WriteAll,
     options: {
       method: 'POST',
-      body: minimalLeftoversArray,
+      body: minimalLeftoversList,
       headers: { builtIn: [BuiltInHeaders.JSON] },
     },
   });
 
-export const writeMinimalLeftovers = (minimalLeftovers: MinimalLeftovers) =>
-  call<WriteMinimalLeftovers>({
+export const writeMinimalLeftover: ApiFunction<WriteMinimalLeftovers> = minimalLeftover =>
+  call({
     url: Methods.Write,
     options: {
       method: 'POST',
-      body: { minimalLeftovers },
+      body: { minimalLeftover },
       headers: { builtIn: [BuiltInHeaders.JSON] },
     },
   });
 
-export const getMinimalLeftoversArray = () => call<GetSetMinimalLeftoversArraySuccessResponse>({ url: Methods.GetAll });
+export const getMinimalLeftoversArray: ApiFunction<GetMinimalLeftoversList> = () => call({ url: Methods.GetAll });
+
+export const deleteMinimalLeftoversList: ApiFunction<DeleteMinimalLeftoversList> = () =>
+  call({ url: Methods.DeleteAll });
 
 /*
 {

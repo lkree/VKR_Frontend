@@ -1,51 +1,43 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { actions as leftoversActions } from '~/entities/LeftoversTable';
+
 import { createAppAsyncThunk } from '~/shared/models/commonStores';
 
 import * as api from '../api';
-import { SHARED_KEY } from '../const';
-import type { MinimalLeftovers, MinimalLeftoversArray } from '../types';
+import type { MinimalLeftovers, MinimalLeftoversList } from '../types';
 
-import { selectMinimalLeftoversArray } from './selectors';
+import { selectMinimalLeftoversList } from './selectors';
 
 const computeActionName = (actionName: string) => `minimalLeftovers/${actionName}`;
 
-export const setMinimalLeftoversArray = createAction(
-  computeActionName('setMinimalLeftoversArray'),
-  (mla: MinimalLeftoversArray) => ({
-    payload: [...mla].sort((a, b) => {
-      const aName = a.cityName.toLocaleLowerCase();
-      const bName = b.cityName.toLowerCase();
+export const setMinimalLeftoversList = createAction<MinimalLeftoversList>(computeActionName('setMinimalLeftoversList'));
 
-      if (bName === SHARED_KEY) return -1;
+export const setMinimalLeftover = createAction<MinimalLeftovers>(computeActionName('setMinimalLeftover'));
 
-      if (aName < bName) return -1;
-      if (aName > bName) return 1;
-
-      return 0;
-    }),
-  })
-);
-
-export const setMinimalLeftovers = createAction<MinimalLeftovers>(computeActionName('setMinimalLeftovers'));
-
-export const getMinimalLeftoversArray = createAppAsyncThunk<Promise<void>, void>(
-  computeActionName('getMinimalLeftoversArray'),
-  (_, { dispatch }) => api.getMinimalLeftoversArray().then(d => dispatch(setMinimalLeftoversArray(d))) as Promise<void>
+export const getMinimalLeftoversList = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('getMinimalLeftoversList'),
+  (_, { dispatch }) => api.getMinimalLeftoversArray().then(d => dispatch(setMinimalLeftoversList(d))) as Promise<void>
 );
 
 export const writeMinimalLeftover = createAppAsyncThunk<Promise<void>, MinimalLeftovers>(
   computeActionName('writeMinimalLeftover'),
-  (minimalLeftovers, { dispatch, getState }) =>
+  (minimalLeftover, { dispatch, getState }) =>
     api
-      .writeMinimalLeftovers(minimalLeftovers)
+      .writeMinimalLeftover(minimalLeftover)
       .then(d =>
         d
-          ? dispatch(setMinimalLeftovers(d))
+          ? dispatch(setMinimalLeftover(d))
           : dispatch(
-              setMinimalLeftoversArray(
-                selectMinimalLeftoversArray(getState())?.filter(it => it.cityName !== minimalLeftovers.cityName) ?? []
+              setMinimalLeftoversList(
+                selectMinimalLeftoversList(getState())?.filter(it => it.cityName !== minimalLeftover.cityName) ?? []
               )
             )
-      ) as Promise<void>
+      )
+      .then(() => dispatch(leftoversActions.getLeftoversList())) as Promise<void>
+);
+
+export const deleteMinimalLeftoversList = createAppAsyncThunk<Promise<void>, void>(
+  computeActionName('deleteMinimalLeftovers'),
+  (_, { dispatch }) => api.deleteMinimalLeftoversList().then(d => dispatch(setMinimalLeftoversList(d))) as Promise<void>
 );

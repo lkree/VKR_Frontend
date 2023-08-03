@@ -1,31 +1,21 @@
-import { BuiltInHeaders, call } from '~/shared/api/common';
+import { BuiltInHeaders } from 'lkree-common-utils/api';
 
-import type { MinimalLeftoversArray, MinimalLeftovers } from '../types';
+import { call } from '~/shared/api/common';
 
 import { Methods } from './const';
-import type { GetSetMinimalLeftoversArraySuccessResponse, WriteMinimalLeftovers } from './types';
+import type { WriteMailSettingsRequest, GetMailSettingsSuccessResponse, SetMailSettingsSuccessResponse } from './types';
 
-export const writeMinimalLeftoversArray = (minimalLeftoversArray: MinimalLeftoversArray) =>
-  call<GetSetMinimalLeftoversArraySuccessResponse>({
-    url: Methods.WriteAll,
+export const writeMailSettings = (writeMailSettingsRequest: WriteMailSettingsRequest) =>
+  call<SetMailSettingsSuccessResponse>({
+    url: Methods.WriteEmailSettings,
     options: {
       method: 'POST',
-      body: minimalLeftoversArray,
+      body: writeMailSettingsRequest,
       headers: { builtIn: [BuiltInHeaders.JSON] },
     },
   });
 
-export const writeMinimalLeftovers = (minimalLeftovers: MinimalLeftovers) =>
-  call<WriteMinimalLeftovers>({
-    url: Methods.Write,
-    options: {
-      method: 'POST',
-      body: { minimalLeftovers },
-      headers: { builtIn: [BuiltInHeaders.JSON] },
-    },
-  });
-
-export const getMinimalLeftoversArray = () => call<GetSetMinimalLeftoversArraySuccessResponse>({ url: Methods.GetAll });
+export const getMailSettings = () => call<GetMailSettingsSuccessResponse>({ url: Methods.GetEmailSettings });
 
 /*
 {

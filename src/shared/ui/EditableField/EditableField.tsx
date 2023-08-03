@@ -1,22 +1,21 @@
-import type { FC } from 'react';
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { FC, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Button, Col, Form, Row, Spinner } from 'react-bootstrap';
 
 import cn from 'classnames';
+import { useFieldFocus } from 'lkree-react-utils';
 
-import { useFieldFocus } from '~/shared/lib/hooks';
 import { Icon } from '~/shared/ui/Icon';
 
 import css from './EditableField.module.sass';
 
 interface Props {
   value: number;
-  onAccept: (payload: number) => any;
-  onDelete: () => any;
+  onDelete?: () => Promise<any>;
+  onAccept: (payload: number) => Promise<any>;
 }
 
 export const EditableField: FC<Props> = ({ value, onAccept, onDelete }) => {
-  const minimalLeftoverInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,58 +25,65 @@ export const EditableField: FC<Props> = ({ value, onAccept, onDelete }) => {
     setIsEditing(false);
 
     if (stateValue !== value) {
-      onAccept(stateValue);
       setIsLoading(true);
+      void onAccept(stateValue).catch(() => setIsLoading(false));
     }
   };
 
-  const onRowWithMinimalLeftoverClick = useCallback(() => setIsEditing(true), []);
+  const onDeleteClick = () => {
+    void onDelete?.().catch(() => setIsLoading(false));
+  };
+
+  const onRowWithValueClick = useCallback(() => setIsEditing(true), []);
 
   useLayoutEffect(() => {
     setStateValue(value);
     setIsLoading(false);
   }, [value]);
 
-  useFieldFocus(minimalLeftoverInputRef, isEditing);
+  useFieldFocus(inputRef, isEditing);
 
   if (isLoading) return <Spinner />;
 
   return (
     <Row className="h-100">
-      <Col onClick={onRowWithMinimalLeftoverClick} className="d-flex align-items-center">
+      <Col onClick={onRowWithValueClick} className="d-flex align-items-center">
         {isEditing ? (
           <Form.Control
-            ref={minimalLeftoverInputRef}
-            onChange={({ target }) => setStateValue(+target.value)}
             type="number"
+            ref={inputRef}
             value={stateValue}
+            onChange={({ target }) => setStateValue(+target.value)}
           />
         ) : (
-          <div className={css.minimalLeftoverWrapper}>{value}</div>
+          <div className={css.valueWrapper}>{value}</div>
         )}
       </Col>
       {isEditing && (
-        <Col sm="6">
-          <div className="d-flex gap-2">
+        <>
+          <Col sm="auto">
             <Button
-              variant="success"
               title="Сохранить"
-              className={cn(css.button, 'rounded-circle')}
+              variant="success"
               onClick={onAcceptClick}
+              className={cn(css.button, 'rounded-circle')}
             >
               <Icon type="Mark" className={cn(css.icon, 'text-white')} />
             </Button>
-
-            <Button
-              variant="danger"
-              title="Удалить"
-              className={cn(css.button, 'rounded-circle position-relative')}
-              onClick={onDelete}
-            >
-              <div className={css.closeButtonContent}>&times;</div>
-            </Button>
-          </div>
-        </Col>
+          </Col>
+          {onDelete && (
+            <Col sm="auto">
+              <Button
+                title="Удалить"
+                variant="danger"
+                onClick={onDeleteClick}
+                className={cn(css.button, 'rounded-circle position-relative')}
+              >
+                <div className={css.closeButtonContent}>&times;</div>
+              </Button>
+            </Col>
+          )}
+        </>
       )}
     </Row>
   );

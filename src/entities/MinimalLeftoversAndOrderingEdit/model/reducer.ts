@@ -1,16 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { getMinimalLeftoversArray, setMinimalLeftovers, setMinimalLeftoversArray } from './actions';
+import { getMinimalLeftoversList, setMinimalLeftover, setMinimalLeftoversList } from './actions';
 import type { State } from './types';
 
 const initialState: State = { minimalLeftoversArray: null, status: 'idle' };
 
 export const $minimalLeftovers = createReducer(initialState, builder => {
   builder
-    .addCase(setMinimalLeftoversArray, (state, { payload }) => {
+    .addCase(setMinimalLeftoversList, (state, { payload }) => {
       state.minimalLeftoversArray = payload;
     })
-    .addCase(setMinimalLeftovers, (state, { payload }) => {
+    .addCase(setMinimalLeftover, (state, { payload }) => {
       if (state.minimalLeftoversArray) {
         state.minimalLeftoversArray = state.minimalLeftoversArray.map(minimalLeftovers =>
           minimalLeftovers.cityName === payload.cityName ? payload : minimalLeftovers
@@ -19,13 +19,13 @@ export const $minimalLeftovers = createReducer(initialState, builder => {
         state.minimalLeftoversArray = [payload];
       }
     })
-    .addCase(getMinimalLeftoversArray.pending, state => {
+    .addCase(getMinimalLeftoversList.pending, state => {
       state.status = 'loading';
     })
-    .addCase(getMinimalLeftoversArray.fulfilled, state => {
+    .addCase(getMinimalLeftoversList.fulfilled, state => {
       state.status = 'idle';
     })
-    .addCase(getMinimalLeftoversArray.rejected, state => {
+    .addCase(getMinimalLeftoversList.rejected, state => {
       state.status = 'idle';
     });
 });

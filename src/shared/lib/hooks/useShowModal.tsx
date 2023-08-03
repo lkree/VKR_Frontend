@@ -1,35 +1,36 @@
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-import { useWindowEvent } from '~/shared/lib/hooks/useWindowEvent';
+import { useQueue, useWindowEvent } from 'lkree-react-utils';
 
 interface ButtonProps {
-  onClick?: () => void;
   title: string;
+  onClick?: () => void;
 }
 
-interface Props {
+export interface ModalState {
+  body: ReactNode;
+  title?: ReactNode;
   acceptProps: ButtonProps;
   declineProps: ButtonProps;
-  title?: ReactNode;
-  body: ReactNode;
 }
 
-export const useShowModal = ({ acceptProps, declineProps, title, body }: Props) => {
-  const [show, setShow] = useState(false);
+export const useShowModal = () => {
+  const queue = useQueue<ModalState>();
+  const modalState = queue.get();
 
   const handleDecline = () => {
-    declineProps.onClick?.();
-    setShow(false);
+    modalState?.declineProps.onClick?.();
+    queue.shift();
   };
 
   const handleAccept = () => {
-    acceptProps.onClick?.();
-    setShow(false);
+    modalState?.acceptProps.onClick?.();
+    queue.shift();
   };
 
   useWindowEvent('keyup', e => {
-    if (show) {
+    if (modalState) {
       switch (e.code) {
         case 'Enter':
           return handleAccept();
@@ -41,28 +42,27 @@ export const useShowModal = ({ acceptProps, declineProps, title, body }: Props) 
 
   return useMemo(
     () => ({
-      show: () => setShow(true),
-      Modal: () => (
-        <>
-          <Modal show={show} onHide={handleDecline} backdrop="static" keyboard={false}>
-            {title && (
+      setModalState: (modalState: ModalState) => queue.push(modalState),
+      Modal: () =>
+        modalState ? (
+          <Modal show keyboard={false} backdrop="static" onHide={handleDecline}>
+            {modalState.title && (
               <Modal.Header closeButton>
-                <Modal.Title>{title}</Modal.Title>
+                <Modal.Title>{modalState.title}</Modal.Title>
               </Modal.Header>
             )}
-            <Modal.Body>{body}</Modal.Body>
+            <Modal.Body>{modalState.body}</Modal.Body>
             <Modal.Footer>
               <Button variant="primary" onClick={handleAccept}>
-                {acceptProps.title}
+                {modalState.acceptProps.title}
               </Button>
               <Button variant="secondary" onClick={handleDecline}>
-                {declineProps.title}
+                {modalState.declineProps.title}
               </Button>
             </Modal.Footer>
           </Modal>
-        </>
-      ),
+        ) : null,
     }),
-    [show]
+    [modalState]
   );
 };

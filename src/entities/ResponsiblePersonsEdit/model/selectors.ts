@@ -1,17 +1,10 @@
 import type { State } from './types';
 
 interface DefaultRootState {
-  $mailerSettings: State;
+  $responsiblePersons: State;
 }
 
-const selectMinimalLeftoversState = (state: DefaultRootState) => state.$mailerSettings;
+const selectResponsiblePersons = (state: DefaultRootState) => state.$responsiblePersons;
 
-export const selectIsDownloading = (state: DefaultRootState) =>
-  selectMinimalLeftoversState(state).downloadingStatus === 'loading';
-export const selectIsUploading = (state: DefaultRootState) =>
-  selectMinimalLeftoversState(state).uploadingStatus === 'loading';
-export const selectLocalMailerSettings = (state: DefaultRootState) => selectMinimalLeftoversState(state).localSettings;
-export const selectReceivedMailerSettings = (state: DefaultRootState) =>
-  selectMinimalLeftoversState(state).receivedSettings;
-export const selectIsAllDataReady = (state: DefaultRootState) =>
-  Object.entries(selectLocalMailerSettings(state)).every(([key, value]) => key === 'secure' || Boolean(value));
+export const selectResponsiblePersonArray = (state: DefaultRootState) =>
+  selectResponsiblePersons(state).responsiblePersonArray;

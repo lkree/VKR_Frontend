@@ -1,2 +1,2 @@
 export { Layout as MinimalLeftoversAndOrderingEdit } from './ui';
-export { $minimalLeftovers, actions } from './model';
+export { $minimalLeftovers, actions, selectMinimalLeftoversListIsEmpty } from './model';

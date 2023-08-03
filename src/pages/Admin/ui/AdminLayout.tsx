@@ -3,7 +3,9 @@ import { Accordion } from 'react-bootstrap';
 
 import { CitiesPrefixEdit } from '~/entities/CitiesPrefixEdit';
 import { FileUpload } from '~/entities/FileUpload';
+import { MailerSettings } from '~/entities/MailerSettings';
 import { MinimalLeftoversAndOrderingEdit } from '~/entities/MinimalLeftoversAndOrderingEdit';
+import { ResponsiblePersonsEdit } from '~/entities/ResponsiblePersonsEdit';
 import { UserLayout } from '~/entities/UserLayout';
 
 const BODY_RENDER_MAP = [
@@ -11,8 +13,10 @@ const BODY_RENDER_MAP = [
   { header: 'Обновить остатки', bodyRender: () => <FileUpload /> },
   {
     header: 'Редактировать количество заказываемого товара и минимальные остатки',
-    bodyRender: () => <MinimalLeftoversEdit />,
+    bodyRender: () => <MinimalLeftoversAndOrderingEdit />,
   },
+  { header: 'Редактировать информацию об ответственных за города', bodyRender: () => <ResponsiblePersonsEdit /> },
+  { header: 'Редактировать настройки отправки почты', bodyRender: () => <MailerSettings /> },
 ];
 
 export const AdminLayout = memo(() => (

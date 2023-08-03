@@ -1,4 +1,6 @@
-import { BuiltInHeaders, call } from '~/shared/api/common';
+import { BuiltInHeaders } from 'lkree-common-utils/api';
+
+import { call } from '~/shared/api/common';
 
 import { Methods } from './const';
 import type { LoginResponse, SessionResponse, LoginRequest } from './types';
